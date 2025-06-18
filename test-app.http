@@ -1,5 +1,10 @@
-### Successful login
-POST https://your-unique-app-name.azurewebsites.net/login
+### Home route check (GET)
+GET https://satkirat-lab2-flask.azurewebsites.net/
+Accept: application/json
+
+
+### Successful login (POST)
+POST https://satkirat-lab2-flask.azurewebsites.net/login
 Content-Type: application/json
 
 {
@@ -7,11 +12,26 @@ Content-Type: application/json
   "password": "admin123"
 }
 
-### Failed login
-POST https://your-unique-app-name.azurewebsites.net/login
+
+### Failed login attempt (POST)
+POST https://satkirat-lab2-flask.azurewebsites.net/login
 Content-Type: application/json
 
 {
   "username": "admin",
   "password": "wrongpassword"
 }
+
+
+### Another failed login attempt (POST)
+POST https://satkirat-lab2-flask.azurewebsites.net/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+
+### Invalid request format (missing JSON fields)
+POST https://satkirat-lab2-flask.azurewebsites.ne
