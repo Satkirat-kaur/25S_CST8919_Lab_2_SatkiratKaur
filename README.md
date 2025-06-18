@@ -1,80 +1,67 @@
 # CST8919 Lab 2: Building a Web App with Threat Detection using Azure Monitor and KQL
 
+## What I Learned
 
-## Objective
-
-In this lab, you will:
-- Create a simple Demo Python Flask app
-- Deploy a the app to Azure App Service
-- Enable diagnostic logging with Azure Monitor
-- Use Kusto Query Language (KQL) to analyze logs
-- Create an alert rule to detect suspicious activity and send it to your email
----
-## Scenario
-As a cloud security engineer, you're tasked with securing a simple web application. The app logs login attempts. You must detect brute-force login behavior and configure an automatic alert when it occurs.
-
-## Tasks
-
-### Part 1: Deploy the Flask App to Azure
-1. Develop a Python Flask app with a `/login` route that logs both successful and failed login attempts.
-2. Deploy the app using **Azure Web App**.
-
-### Part 2: Enable Monitoring
-1. Create a **Log Analytics Workspace** in the same region.
-2. In your Web App, go to **Monitoring > Diagnostic settings**:
-   - Enable:
-     - `AppServiceConsoleLogs`
-     - `AppServiceHTTPLogs` (optional)
-   - Send to the Log Analytics workspace.
-3. Interact with the app to generate logs (e.g., failed `/login` attempts).
-
-
-You must test your app using a .http file (compatible with VS Code + REST Client) and include that file in your GitHub repo as test-app.http.
-
-### Part 3: Query Logs with KQL
-1. Create a KQL query to find failed login attempts.
-2. Test it
-
-### Part 4: Create an Alert Rule
-1. Go to Azure Monitor > Alerts > + Create > Alert Rule.
-2. Scope: Select your Log Analytics Workspace.
-3. Condition: Use the query you created in the last step.
-4. Set:
-    - Measure: Table rows
-    - Threshold: Greater than 5
-    - Aggregation granularity: 5 minutes
-    - Frequency of evaluation: 1 minute
-    - Add an Action Group to send an email notification.
-    - Name the rule and set Severity (2 or 3).
-    - Save the alert.
-
-## Submission
-### GitHub Repository
-- Initialize a Git repository for your project.
-- Make **frequent commits** with meaningful commit messages.
-- Push your code to a **public GitHub repository**.
-- Include  **YouTube demo link in the README.md**.
-
-Include a `README.md` with:
-  - Briefly describe what you learned during this lab, challenges you faced, and how you’d improve the detection logic in a real-world scenario.
-  - Your KQL query with explanation
-
-- **A link to a 5-minute YouTube video demo** showing:
-  - App deployed
-  - Log generation and inspection in Azure Monitor
-  - KQL query usage
-  - Alert configuration and triggering
-
-You must test your app using a .http file (compatible with VS Code + REST Client) and include that file in your GitHub repo as test-app.http.
-
+During this lab, I learned how to:
+- Deploy a Python Flask app to Azure App Service
+- Configure diagnostic logging using Azure Monitor
+- Use Kusto Query Language (KQL) to analyse app behaviour
+- Create an alert rule that detects multiple failed login attempts
 
 ---
 
-## Submission Instructions
+## Challenges Faced
 
-Submit your **GitHub repository link** via Brightspace.
+- Initial deployment failures due to misplacement of app.py
+- 503 and 404 errors from incorrect startup configuration
+- Diagnosing logs when columns like `csUriStem` didn't match – fixed by inspecting available fields with `take 1`
+- Setting up KQL alerts with the correct time frame and thresholds
 
-**Deadline**: Wednesday, 18 June 2025
+### Why I used gunicorn and app.zip:
+- I chose gunicorn because it's a production-ready Python web server that's required by Azure App Service to run Flask apps reliably on Linux. The default Flask server is for development only and doesn’t work well in Azure's environment.
+- I used app.zip with ZIP Deploy because it provided me with more control compared to Git. It allowed me to quickly upload just the necessary files (app.py and requirements.txt) and avoid issues with broken Git pushes or extra folders.
 
 ---
+
+## Real-World Improvement
+
+In a real-world scenario:
+- Track IP addresses:
+Instead of just logging usernames and status codes, I would also log the client’s IP address to identify suspicious sources and block repeated failed attempts from the same location.
+
+- Rate limiting / throttling:
+I would add logic to limit login attempts per IP or user (e.g., max 5 tries in 10 minutes). This helps reduce brute-force attacks.
+
+- Geo-location checks:
+I could flag login attempts from unusual countries or IP ranges that differ from the user’s normal login behaviour.
+
+- Database logging:
+Instead of just printing logs to the console, I’d store login attempts in a secure database for long-term analysis and auditing.
+
+- Automated blocking or flagging:
+Use Azure Firewall, Application Gateway, or custom middleware to block IPs automatically or alert security teams in real time.
+
+---
+
+## KQL Query Explanation
+
+```kql
+AppServiceHTTPLogs // This is the log table that stores all incoming HTTP requests to your Azure Web App.
+| where TimeGenerated > ago(5m) // This filters the logs to show only requests made in the last 5 minutes.
+| where CsUriStem == "/login" // This narrows the results to just the /login route, which is where users try to log in.
+| where ScStatus == 401 // This filters the results only to include failed login attempts — HTTP status code 401 means Unauthorised.
+```
+
+## YouTube Demo Link
+
+https://youtu.be/Qh6V3zJCS2w
+
+- The video shows:
+- App deployed on Azure
+- /login requests made using the .http file
+- Logs appearing in Azure Monitor
+- KQL query tested
+- Alert setup and triggering demo
+
+
 
