@@ -4,8 +4,10 @@
 
 During this lab, I learned how to:
 - Deploy a Python Flask app to Azure App Service
+  ![app running in browser](https://github.com/Satkirat-kaur/25S_CST8919_Lab_2_SatkiratKaur/blob/main/screenshots/app%20running%20in%20browser.png)
 - Configure diagnostic logging using Azure Monitor
 - Use Kusto Query Language (KQL) to analyse app behaviour
+  ![KQL query](https://github.com/Satkirat-kaur/25S_CST8919_Lab_2_SatkiratKaur/blob/main/screenshots/failed%20attempt%20query.png)
 - Create an alert rule that detects multiple failed login attempts
 
 ---
@@ -59,6 +61,9 @@ https://youtu.be/Qh6V3zJCS2w
 - The video shows:
 - App deployed on Azure
 - /login requests made using the .http file
+  ![http login response successfull](https://github.com/Satkirat-kaur/25S_CST8919_Lab_2_SatkiratKaur/blob/main/screenshots/login%20successful%20response.png)
+  ![http login response failed](https://github.com/Satkirat-kaur/25S_CST8919_Lab_2_SatkiratKaur/blob/main/screenshots/login%20failed%20response.png)
+  
 - Logs appearing in Azure Monitor
 - KQL query tested
 - Alert setup and triggering demo
