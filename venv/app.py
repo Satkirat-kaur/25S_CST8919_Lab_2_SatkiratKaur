@@ -21,3 +21,7 @@ def login():
     else:
         app.logger.warning(f"Failed login: {username}")
         return {'message': 'Login failed'}, 401
+
+# ⬇️ Add this to run the app
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)
